@@ -12,7 +12,7 @@ sleep 5
 echo "========================================"
 echo " [2/4] Análise de cobertura por mutação..."
 echo "========================================"
-mvn -DwithHistory test-compile org.pitest:pitest-maven:mutationCoverage
+mvn test-compile org.pitest:pitest-maven:mutationCoverage
 
 sleep 5
 

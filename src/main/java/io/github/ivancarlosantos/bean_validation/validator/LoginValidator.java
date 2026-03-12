@@ -8,10 +8,17 @@ import lombok.extern.slf4j.Slf4j;
 @Slf4j
 public class LoginValidator implements Valid {
 
+    private String login;
+
+    public LoginValidator(String login) {
+        this.login = login;
+    }
+
     @Override
     public void execute(String value) {
-        LoginValidator.log.info("Validating Login: {}", value);
-        if (!value.matches(RegexPatterns.LOGIN)) {
+        this.login = value;
+        LoginValidator.log.info("Validating Login: {}", login);
+        if (!login.matches(RegexPatterns.LOGIN)) {
             throw new VerifyFieldsException("Invalid Login format");
         }
     }

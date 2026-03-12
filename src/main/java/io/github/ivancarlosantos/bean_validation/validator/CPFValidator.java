@@ -8,11 +8,18 @@ import lombok.extern.slf4j.Slf4j;
 @Slf4j
 public class CPFValidator implements Valid {
 
+    private String cpf;
+
+    public CPFValidator(String cpf) {
+        this.cpf = cpf;
+    }
+
     @Override
     public void execute(String value) {
-      CPFValidator.log.info("Validating CPF: {}", value);
-      if (!value.matches(RegexPatterns.CPF) && value.length() != 11) {
-          throw new VerifyFieldsException("Invalid CPF format");
-      }
+        this.cpf = value;
+        CPFValidator.log.info("Validating CPF: {}", cpf);
+        if (!cpf.matches(RegexPatterns.CPF) && cpf.length() != 11) {
+            throw new VerifyFieldsException("Invalid CPF format");
+        }
     }
 }
