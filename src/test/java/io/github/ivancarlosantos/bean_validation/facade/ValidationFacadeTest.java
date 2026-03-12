@@ -1,10 +1,11 @@
 package io.github.ivancarlosantos.bean_validation.facade;
 
 import io.github.ivancarlosantos.bean_validation.exception.VerifyFieldsException;
-import io.github.ivancarlosantos.bean_validation.validator.*;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.params.ParameterizedTest;
+import org.junit.jupiter.params.provider.ValueSource;
 
 import static org.junit.jupiter.api.Assertions.*;
 
@@ -12,189 +13,104 @@ import static org.junit.jupiter.api.Assertions.*;
 class ValidationFacadeTest {
 
     // ─────────────────────────────────────────────────────────────────────────
-    // Factory method return type & non-null
+    // Return type: each method returns the validated String
     // ─────────────────────────────────────────────────────────────────────────
 
     @Test
-    @DisplayName("cep() should return a non-null CEPValidator instance")
-    void cepShouldReturnNonNullCEPValidator() {
-        CEPValidator validator = ValidationFacade.cep("12345-678");
-        assertNotNull(validator);
-        assertInstanceOf(CEPValidator.class, validator);
+    @DisplayName("cep() should return the validated value")
+    void cepShouldReturnValidatedValue() {
+        assertEquals("12345-678", ValidationFacade.cep("12345-678"));
     }
 
     @Test
-    @DisplayName("cpf() should return a non-null CPFValidator instance")
-    void cpfShouldReturnNonNullCPFValidator() {
-        CPFValidator validator = ValidationFacade.cpf("123.456.789-09");
-        assertNotNull(validator);
-        assertInstanceOf(CPFValidator.class, validator);
+    @DisplayName("cpf() should return the validated value")
+    void cpfShouldReturnValidatedValue() {
+        assertEquals("123.456.789-09", ValidationFacade.cpf("123.456.789-09"));
     }
 
     @Test
-    @DisplayName("email() should return a non-null EmailValidator instance")
-    void emailShouldReturnNonNullEmailValidator() {
-        EmailValidator validator = ValidationFacade.email("test@example.com");
-        assertNotNull(validator);
-        assertInstanceOf(EmailValidator.class, validator);
+    @DisplayName("email() should return the validated value")
+    void emailShouldReturnValidatedValue() {
+        assertEquals("test@example.com", ValidationFacade.email("test@example.com"));
     }
 
     @Test
-    @DisplayName("login() should return a non-null LoginValidator instance")
-    void loginShouldReturnNonNullLoginValidator() {
-        LoginValidator validator = ValidationFacade.login("user123");
-        assertNotNull(validator);
-        assertInstanceOf(LoginValidator.class, validator);
+    @DisplayName("login() should return the validated value")
+    void loginShouldReturnValidatedValue() {
+        assertEquals("user123", ValidationFacade.login("user123"));
     }
 
     @Test
-    @DisplayName("password() should return a non-null PasswordValidator instance")
-    void passwordShouldReturnNonNullPasswordValidator() {
-        PasswordValidator validator = ValidationFacade.password("Password1@");
-        assertNotNull(validator);
-        assertInstanceOf(PasswordValidator.class, validator);
+    @DisplayName("password() should return the validated value")
+    void passwordShouldReturnValidatedValue() {
+        assertEquals("Password1@", ValidationFacade.password("Password1@"));
     }
 
     @Test
-    @DisplayName("phone() should return a non-null PhoneValidator instance")
-    void phoneShouldReturnNonNullPhoneValidator() {
-        PhoneValidator validator = ValidationFacade.phone("5511999999999");
-        assertNotNull(validator);
-        assertInstanceOf(PhoneValidator.class, validator);
+    @DisplayName("phone() should return the validated value")
+    void phoneShouldReturnValidatedValue() {
+        assertEquals("5511999999999", ValidationFacade.phone("5511999999999"));
     }
 
     // ─────────────────────────────────────────────────────────────────────────
-    // Each factory call produces a distinct instance
-    // ─────────────────────────────────────────────────────────────────────────
-
-    @Test
-    @DisplayName("cep() should return a new instance on each call")
-    void cepShouldReturnNewInstanceOnEachCall() {
-        CEPValidator v1 = ValidationFacade.cep("12345-678");
-        CEPValidator v2 = ValidationFacade.cep("12345-678");
-        assertNotSame(v1, v2);
-    }
-
-    @Test
-    @DisplayName("cpf() should return a new instance on each call")
-    void cpfShouldReturnNewInstanceOnEachCall() {
-        CPFValidator v1 = ValidationFacade.cpf("123.456.789-09");
-        CPFValidator v2 = ValidationFacade.cpf("123.456.789-09");
-        assertNotSame(v1, v2);
-    }
-
-    @Test
-    @DisplayName("email() should return a new instance on each call")
-    void emailShouldReturnNewInstanceOnEachCall() {
-        EmailValidator v1 = ValidationFacade.email("test@example.com");
-        EmailValidator v2 = ValidationFacade.email("test@example.com");
-        assertNotSame(v1, v2);
-    }
-
-    @Test
-    @DisplayName("login() should return a new instance on each call")
-    void loginShouldReturnNewInstanceOnEachCall() {
-        LoginValidator v1 = ValidationFacade.login("user123");
-        LoginValidator v2 = ValidationFacade.login("user123");
-        assertNotSame(v1, v2);
-    }
-
-    @Test
-    @DisplayName("password() should return a new instance on each call")
-    void passwordShouldReturnNewInstanceOnEachCall() {
-        PasswordValidator v1 = ValidationFacade.password("Password1@");
-        PasswordValidator v2 = ValidationFacade.password("Password1@");
-        assertNotSame(v1, v2);
-    }
-
-    @Test
-    @DisplayName("phone() should return a new instance on each call")
-    void phoneShouldReturnNewInstanceOnEachCall() {
-        PhoneValidator v1 = ValidationFacade.phone("5511999999999");
-        PhoneValidator v2 = ValidationFacade.phone("5511999999999");
-        assertNotSame(v1, v2);
-    }
-
-    // ─────────────────────────────────────────────────────────────────────────
-    // Integration: valid input → no exception
+    // Integration: valid inputs → no exception, correct value returned
     // ─────────────────────────────────────────────────────────────────────────
 
     @Nested
-    @DisplayName("Integration – valid inputs should NOT throw any exception")
+    @DisplayName("Integration – valid inputs should NOT throw and return the value")
     class ValidInputIntegrationTests {
 
-        @Test
-        @DisplayName("cep() with valid CEP executes without exception")
-        void cepValidInputNoException() {
-            assertDoesNotThrow(() -> ValidationFacade.cep("12345-678").execute("12345-678"));
+        @ParameterizedTest(name = "Valid CEP: \"{0}\"")
+        @ValueSource(strings = {"12345-678", "12345678", "01310-100"})
+        @DisplayName("cep() accepts valid CEP formats")
+        void cepValidInputs(String cep) {
+            assertDoesNotThrow(() -> ValidationFacade.cep(cep));
+            assertEquals(cep, ValidationFacade.cep(cep));
         }
 
-        @Test
-        @DisplayName("cep() with raw valid CEP executes without exception")
-        void cepRawValidInputNoException() {
-            assertDoesNotThrow(() -> ValidationFacade.cep("12345678").execute("12345678"));
+        @ParameterizedTest(name = "Valid CPF: \"{0}\"")
+        @ValueSource(strings = {"123.456.789-09", "987.654.321-00"})
+        @DisplayName("cpf() accepts valid CPF formats")
+        void cpfValidInputs(String cpf) {
+            assertDoesNotThrow(() -> ValidationFacade.cpf(cpf));
+            assertEquals(cpf, ValidationFacade.cpf(cpf));
         }
 
-        @Test
-        @DisplayName("cpf() with valid CPF executes without exception")
-        void cpfValidInputNoException() {
-            assertDoesNotThrow(() -> ValidationFacade.cpf("123.456.789-09").execute("123.456.789-09"));
+        @ParameterizedTest(name = "Valid email: \"{0}\"")
+        @ValueSource(strings = {"test@example.com", "user.name+tag@domain.org"})
+        @DisplayName("email() accepts valid email formats")
+        void emailValidInputs(String email) {
+            assertDoesNotThrow(() -> ValidationFacade.email(email));
+            assertEquals(email, ValidationFacade.email(email));
         }
 
-        @Test
-        @DisplayName("email() with valid email executes without exception")
-        void emailValidInputNoException() {
-            assertDoesNotThrow(() -> ValidationFacade.email("test@example.com").execute("test@example.com"));
+        @ParameterizedTest(name = "Valid login: \"{0}\"")
+        @ValueSource(strings = {"user123", "user_name.ok"})
+        @DisplayName("login() accepts valid login formats")
+        void loginValidInputs(String login) {
+            assertDoesNotThrow(() -> ValidationFacade.login(login));
+            assertEquals(login, ValidationFacade.login(login));
         }
 
-        @Test
-        @DisplayName("email() with complex valid email executes without exception")
-        void emailComplexValidInputNoException() {
-            assertDoesNotThrow(() -> ValidationFacade.email("user.name+tag@sub.domain.org")
-                    .execute("user.name+tag@sub.domain.org"));
+        @ParameterizedTest(name = "Valid password: \"{0}\"")
+        @ValueSource(strings = {"Password1@", "Str0ng!Pw"})
+        @DisplayName("password() accepts valid password formats")
+        void passwordValidInputs(String password) {
+            assertDoesNotThrow(() -> ValidationFacade.password(password));
+            assertEquals(password, ValidationFacade.password(password));
         }
 
-        @Test
-        @DisplayName("login() with valid login executes without exception")
-        void loginValidInputNoException() {
-            assertDoesNotThrow(() -> ValidationFacade.login("user123").execute("user123"));
-        }
-
-        @Test
-        @DisplayName("login() with underscore and dot executes without exception")
-        void loginWithSpecialCharsNoException() {
-            assertDoesNotThrow(() -> ValidationFacade.login("user_name.ok").execute("user_name.ok"));
-        }
-
-        @Test
-        @DisplayName("password() with valid password executes without exception")
-        void passwordValidInputNoException() {
-            assertDoesNotThrow(() -> ValidationFacade.password("Password1@").execute("Password1@"));
-        }
-
-        @Test
-        @DisplayName("password() with another strong password executes without exception")
-        void passwordAnotherValidInputNoException() {
-            assertDoesNotThrow(() -> ValidationFacade.password("Str0ng!Pw").execute("Str0ng!Pw"));
-        }
-
-        @Test
-        @DisplayName("phone() with valid phone executes without exception")
-        void phoneValidInputNoException() {
-            assertDoesNotThrow(() -> ValidationFacade.phone("5511999999999").execute("5511999999999"));
-        }
-
-        @Test
-        @DisplayName("phone() with full formatted phone executes without exception")
-        void phoneFormattedValidInputNoException() {
-            assertDoesNotThrow(() -> ValidationFacade
-                    .phone("+55 (11) 99999-9999")
-                    .execute("+55 (11) 99999-9999"));
+        @ParameterizedTest(name = "Valid phone: \"{0}\"")
+        @ValueSource(strings = {"5511999999999", "+55 (11) 99999-9999"})
+        @DisplayName("phone() accepts valid phone formats")
+        void phoneValidInputs(String phone) {
+            assertDoesNotThrow(() -> ValidationFacade.phone(phone));
+            assertEquals(phone, ValidationFacade.phone(phone));
         }
     }
 
     // ─────────────────────────────────────────────────────────────────────────
-    // Integration: invalid input → exception
+    // Integration: invalid inputs → correct exception thrown
     // ─────────────────────────────────────────────────────────────────────────
 
     @Nested
@@ -202,64 +118,44 @@ class ValidationFacadeTest {
     class InvalidInputIntegrationTests {
 
         @Test
-        @DisplayName("cep() with invalid CEP throws VerifyFieldsException")
-        void cepInvalidInputThrowsException() {
-            assertThrows(VerifyFieldsException.class,
-                    () -> ValidationFacade.cep("INVALID").execute("INVALID"));
+        @DisplayName("cep() throws VerifyFieldsException for invalid CEP")
+        void cepInvalidThrows() {
+            assertThrows(VerifyFieldsException.class, () -> ValidationFacade.cep("INVALID"));
         }
 
         @Test
-        @DisplayName("cpf() with invalid CPF throws VerifyFieldsException")
-        void cpfInvalidInputThrowsException() {
-            assertThrows(VerifyFieldsException.class,
-                    () -> ValidationFacade.cpf("BAD").execute("BAD"));
+        @DisplayName("cpf() throws VerifyFieldsException for invalid CPF")
+        void cpfInvalidThrows() {
+            assertThrows(VerifyFieldsException.class, () -> ValidationFacade.cpf("BAD"));
         }
 
         @Test
-        @DisplayName("email() with invalid email throws IllegalArgumentException")
-        void emailInvalidInputThrowsException() {
-            assertThrows(IllegalArgumentException.class,
-                    () -> ValidationFacade.email("notanemail").execute("notanemail"));
+        @DisplayName("email() throws IllegalArgumentException for invalid email")
+        void emailInvalidThrows() {
+            assertThrows(IllegalArgumentException.class, () -> ValidationFacade.email("notanemail"));
         }
 
         @Test
-        @DisplayName("login() with too-short login throws VerifyFieldsException")
-        void loginTooShortThrowsException() {
-            assertThrows(VerifyFieldsException.class,
-                    () -> ValidationFacade.login("ab").execute("ab"));
+        @DisplayName("login() throws VerifyFieldsException for too-short login")
+        void loginInvalidThrows() {
+            assertThrows(VerifyFieldsException.class, () -> ValidationFacade.login("ab"));
         }
 
         @Test
-        @DisplayName("login() with special chars throws VerifyFieldsException")
-        void loginSpecialCharThrowsException() {
-            assertThrows(VerifyFieldsException.class,
-                    () -> ValidationFacade.login("user!").execute("user!"));
+        @DisplayName("password() throws VerifyFieldsException for weak short password")
+        void passwordInvalidThrows() {
+            assertThrows(VerifyFieldsException.class, () -> ValidationFacade.password("weak"));
         }
 
         @Test
-        @DisplayName("password() with too-short weak password throws VerifyFieldsException")
-        void passwordTooShortThrowsException() {
-            assertThrows(VerifyFieldsException.class,
-                    () -> ValidationFacade.password("weak").execute("weak"));
-        }
-
-        @Test
-        @DisplayName("password() with long invalid password throws VerifyFieldsException")
-        void passwordLongInvalidThrowsException() {
-            assertThrows(VerifyFieldsException.class,
-                    () -> ValidationFacade.password("weakpassword1234!").execute("weakpassword1234!"));
-        }
-
-        @Test
-        @DisplayName("phone() with invalid phone throws VerifyFieldsException")
-        void phoneInvalidInputThrowsException() {
-            assertThrows(VerifyFieldsException.class,
-                    () -> ValidationFacade.phone("invalid").execute("invalid"));
+        @DisplayName("phone() throws VerifyFieldsException for invalid phone")
+        void phoneInvalidThrows() {
+            assertThrows(VerifyFieldsException.class, () -> ValidationFacade.phone("invalid"));
         }
     }
 
     // ─────────────────────────────────────────────────────────────────────────
-    // Exception message propagation through the facade
+    // Exception message propagation
     // ─────────────────────────────────────────────────────────────────────────
 
     @Nested
@@ -267,50 +163,50 @@ class ValidationFacadeTest {
     class ExceptionMessagePropagationTests {
 
         @Test
-        @DisplayName("cep() invalid → message 'Invalid CEP format'")
+        @DisplayName("cep() invalid → 'Invalid CEP format'")
         void cepExceptionMessage() {
             VerifyFieldsException ex = assertThrows(VerifyFieldsException.class,
-                    () -> ValidationFacade.cep("INVALID").execute("INVALID"));
+                    () -> ValidationFacade.cep("INVALID"));
             assertEquals("Invalid CEP format", ex.getMessage());
         }
 
         @Test
-        @DisplayName("cpf() invalid → message 'Invalid CPF format'")
+        @DisplayName("cpf() invalid → 'Invalid CPF format'")
         void cpfExceptionMessage() {
             VerifyFieldsException ex = assertThrows(VerifyFieldsException.class,
-                    () -> ValidationFacade.cpf("BAD").execute("BAD"));
+                    () -> ValidationFacade.cpf("BAD"));
             assertEquals("Invalid CPF format", ex.getMessage());
         }
 
         @Test
-        @DisplayName("email() invalid → message 'Invalid email format'")
+        @DisplayName("email() invalid → 'Invalid email format'")
         void emailExceptionMessage() {
             IllegalArgumentException ex = assertThrows(IllegalArgumentException.class,
-                    () -> ValidationFacade.email("bad").execute("bad"));
+                    () -> ValidationFacade.email("bad"));
             assertEquals("Invalid email format", ex.getMessage());
         }
 
         @Test
-        @DisplayName("login() invalid → message 'Invalid Login format'")
+        @DisplayName("login() invalid → 'Invalid Login format'")
         void loginExceptionMessage() {
             VerifyFieldsException ex = assertThrows(VerifyFieldsException.class,
-                    () -> ValidationFacade.login("ab").execute("ab"));
+                    () -> ValidationFacade.login("ab"));
             assertEquals("Invalid Login format", ex.getMessage());
         }
 
         @Test
-        @DisplayName("password() invalid → message 'Invalid Password format'")
+        @DisplayName("password() invalid → 'Invalid Password format'")
         void passwordExceptionMessage() {
             VerifyFieldsException ex = assertThrows(VerifyFieldsException.class,
-                    () -> ValidationFacade.password("weak").execute("weak"));
+                    () -> ValidationFacade.password("weak"));
             assertEquals("Invalid Password format", ex.getMessage());
         }
 
         @Test
-        @DisplayName("phone() invalid → message 'Invalid Phone format'")
+        @DisplayName("phone() invalid → 'Invalid Phone format'")
         void phoneExceptionMessage() {
             VerifyFieldsException ex = assertThrows(VerifyFieldsException.class,
-                    () -> ValidationFacade.phone("invalid").execute("invalid"));
+                    () -> ValidationFacade.phone("invalid"));
             assertEquals("Invalid Phone format", ex.getMessage());
         }
     }
@@ -322,10 +218,6 @@ class ValidationFacadeTest {
     @Test
     @DisplayName("ValidationFacade should be instantiable (public default constructor)")
     void facadeShouldBeInstantiable() {
-        assertDoesNotThrow(() -> {
-            ValidationFacade facade = new ValidationFacade();
-            assertNotNull(facade);
-        });
+        assertDoesNotThrow(() -> assertNotNull(new ValidationFacade()));
     }
 }
-

@@ -4,27 +4,28 @@ import io.github.ivancarlosantos.bean_validation.validator.*;
 
 public class ValidationFacade {
 
-    public static CEPValidator cep(String cep) {
-        return new CEPValidator(cep);
+    public static String cep(String value) {
+        return new CEPValidator().execute(value);
     }
 
-    public static CPFValidator cpf(String cpf) {
-        return new CPFValidator(cpf);
+    public static String cpf(String value) {
+        return new CPFValidator().execute(value);
     }
 
-    public static EmailValidator email(String email) {
-        return new EmailValidator(email);
+    public static String email(String value) {
+        return new EmailValidator().execute(value);
     }
 
-    public static LoginValidator login(String login) {
-        return new LoginValidator(login);
+    public static String login(String value) {
+        return new LoginValidator().execute(value);
     }
 
-    public static PasswordValidator password(String password) {
-        return new PasswordValidator(password);
+    public static String password(String value) {
+        return new PasswordValidator().execute(value);
     }
 
-    public static PhoneValidator phone(String phone) {
-        return new PhoneValidator(phone);
+    public static String phone(String value) {
+        return new PhoneValidator().execute(value);
     }
 }
+

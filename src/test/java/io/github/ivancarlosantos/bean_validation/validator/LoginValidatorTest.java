@@ -11,78 +11,49 @@ import static org.junit.jupiter.api.Assertions.*;
 @DisplayName("LoginValidator - Unit Tests")
 class LoginValidatorTest {
 
-    // ─── Valid inputs (no exception expected) ────────────────────────────────
+    // ─── Valid inputs ─────────────────────────────────────────────────────────
 
     @ParameterizedTest(name = "Valid login: \"{0}\"")
-    @ValueSource(strings = {
-        "user123",
-        "User_Name",
-        "user.name",
-        "user-name",
-        "abc",
-        "login2025",
-        "a1b"
-    })
-    @DisplayName("Should NOT throw for valid login values")
-    void shouldNotThrowForValidLogin(String login) {
-        LoginValidator validator = new LoginValidator(login);
-        assertDoesNotThrow(() -> validator.execute(login));
+    @ValueSource(strings = {"user123", "User_Name", "user.name", "user-name", "abc", "login2025", "a1b"})
+    @DisplayName("Should return the value for valid login")
+    void shouldReturnValueForValidLogin(String login) {
+        String result = new LoginValidator().execute(login);
+        assertEquals(login, result);
     }
 
-    // ─── Invalid inputs (exception expected) ─────────────────────────────────
+    @Test
+    @DisplayName("Should not throw for a valid login")
+    void shouldNotThrowForValidLogin() {
+        assertDoesNotThrow(() -> new LoginValidator().execute("user123"));
+    }
+
+    // ─── Invalid inputs ───────────────────────────────────────────────────────
 
     @ParameterizedTest(name = "Invalid login: \"{0}\"")
     @ValueSource(strings = {
-        "ab",                                    // too short (< 3 chars)
-        "us er",                                 // contains space
-        "user!",                                 // special char not allowed
-        "thisLoginNameIsTooLongToBeValid1234"    // too long (> 20 chars)
+        "ab",
+        "us er",
+        "user!",
+        "thisLoginNameIsTooLongToBeValid1234"
     })
-    @DisplayName("Should throw VerifyFieldsException for invalid login values")
+    @DisplayName("Should throw VerifyFieldsException for invalid login")
     void shouldThrowForInvalidLogin(String login) {
-        LoginValidator validator = new LoginValidator(login);
-        assertThrows(VerifyFieldsException.class, () -> validator.execute(login));
+        assertThrows(VerifyFieldsException.class, () -> new LoginValidator().execute(login));
     }
 
-    // ─── Message validation ───────────────────────────────────────────────────
+    // ─── Message & type validation ────────────────────────────────────────────
 
     @Test
-    @DisplayName("Should throw with the correct exception message")
+    @DisplayName("Should throw with message 'Invalid Login format'")
     void shouldThrowWithCorrectMessage() {
-        String invalidLogin = "ab";
-        LoginValidator validator = new LoginValidator(invalidLogin);
-
-        VerifyFieldsException ex = assertThrows(
-                VerifyFieldsException.class,
-                () -> validator.execute(invalidLogin)
-        );
+        VerifyFieldsException ex = assertThrows(VerifyFieldsException.class,
+                () -> new LoginValidator().execute("ab"));
         assertEquals("Invalid Login format", ex.getMessage());
     }
 
     @Test
-    @DisplayName("Exception should be instance of RuntimeException")
-    void exceptionShouldBeRuntimeException() {
-        LoginValidator validator = new LoginValidator("ab");
-        VerifyFieldsException ex = assertThrows(VerifyFieldsException.class,
-                () -> validator.execute("ab"));
-        assertInstanceOf(RuntimeException.class, ex);
-    }
-
-    // ─── execute() updates internal state ────────────────────────────────────
-
-    @Test
-    @DisplayName("execute() should use the value passed as argument, not constructor value")
-    void executeShouldUseArgumentValue() {
-        // Constructed with invalid login but executed with a valid one
-        LoginValidator validator = new LoginValidator("ab");
-        assertDoesNotThrow(() -> validator.execute("validLogin"));
-    }
-
-    @Test
-    @DisplayName("Should throw when execute() is called with invalid value")
-    void shouldThrowWhenExecutedWithInvalidLogin() {
-        LoginValidator validator = new LoginValidator("validLogin");
-        assertThrows(VerifyFieldsException.class, () -> validator.execute("ab"));
+    @DisplayName("Exception should extend RuntimeException")
+    void exceptionShouldExtendRuntimeException() {
+        assertThrows(RuntimeException.class, () -> new LoginValidator().execute("ab"));
     }
 }
-

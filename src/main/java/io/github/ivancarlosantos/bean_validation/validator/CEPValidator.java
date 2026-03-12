@@ -8,18 +8,13 @@ import lombok.extern.slf4j.Slf4j;
 @Slf4j
 public class CEPValidator implements Valid {
 
-    private String cep;
-
-    public CEPValidator(String cep) {
-        this.cep = cep;
-    }
-
     @Override
-    public void execute(String value) {
-        this.cep = value;
-        CEPValidator.log.info("Validating CEP: {}", cep);
-        if (!cep.matches(RegexPatterns.CEP) && cep.length() != 9) {
+    public String execute(String value) throws VerifyFieldsException {
+        CEPValidator.log.info("Validating CEP: {}", value);
+        if (!value.matches(RegexPatterns.CEP) && value.length() != 9) {
             throw new VerifyFieldsException("Invalid CEP format");
         }
+
+        return value;
     }
 }

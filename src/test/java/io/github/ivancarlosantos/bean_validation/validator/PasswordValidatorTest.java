@@ -11,88 +11,53 @@ import static org.junit.jupiter.api.Assertions.*;
 @DisplayName("PasswordValidator - Unit Tests")
 class PasswordValidatorTest {
 
-    // ─── Valid inputs (no exception expected) ────────────────────────────────
-    // Valid password: at least 1 uppercase, 1 lowercase, 1 digit, 1 special char (@#$%^&+=!), min 8 chars
+    // ─── Valid inputs (matches regex → no exception, returns value) ───────────
 
     @ParameterizedTest(name = "Valid password: \"{0}\"")
-    @ValueSource(strings = {
-        "Password1@",
-        "Str0ng!Pw",
-        "S3cur3P@ss",
-        "Abc12345#",
-        "Test@1234"
-    })
-    @DisplayName("Should NOT throw for valid passwords matching the regex")
-    void shouldNotThrowForValidPassword(String password) {
-        PasswordValidator validator = new PasswordValidator(password);
-        assertDoesNotThrow(() -> validator.execute(password));
+    @ValueSource(strings = {"Password1@", "Str0ng!Pw", "S3cur3P@ss", "Abc12345#", "Test@1234"})
+    @DisplayName("Should return the value for valid passwords matching the regex")
+    void shouldReturnValueForValidPassword(String password) {
+        String result = new PasswordValidator().execute(password);
+        assertEquals(password, result);
     }
-
-    // ─── Invalid inputs (exception expected) ─────────────────────────────────
-    // Exception thrown only when: !matches regex AND (length < 8 OR length > 12)
-
-    @ParameterizedTest(name = "Invalid password (too short): \"{0}\"")
-    @ValueSource(strings = {
-        "weak",      // length 4 < 8, no regex match
-        "bad",       // length 3 < 8, no regex match
-        "Ab1@"       // length 4 < 8, no regex match
-    })
-    @DisplayName("Should throw VerifyFieldsException for password shorter than 8 chars that does not match regex")
-    void shouldThrowForTooShortPassword(String password) {
-        PasswordValidator validator = new PasswordValidator(password);
-        assertThrows(VerifyFieldsException.class, () -> validator.execute(password));
-    }
-
-    @ParameterizedTest(name = "Invalid password (too long, no regex): \"{0}\"")
-    @ValueSource(strings = {
-        "weakpassword1234!",       // length 17 > 12, no uppercase → no match
-        "nouppercase12345!"        // length 17 > 12, no uppercase → no match
-    })
-    @DisplayName("Should throw VerifyFieldsException for password longer than 12 chars that does not match regex")
-    void shouldThrowForTooLongInvalidPassword(String password) {
-        PasswordValidator validator = new PasswordValidator(password);
-        assertThrows(VerifyFieldsException.class, () -> validator.execute(password));
-    }
-
-    // ─── Message validation ───────────────────────────────────────────────────
 
     @Test
-    @DisplayName("Should throw with the correct exception message")
-    void shouldThrowWithCorrectMessage() {
-        String invalidPassword = "weak";
-        PasswordValidator validator = new PasswordValidator(invalidPassword);
+    @DisplayName("Should not throw for a valid password")
+    void shouldNotThrowForValidPassword() {
+        assertDoesNotThrow(() -> new PasswordValidator().execute("Password1@"));
+    }
 
-        VerifyFieldsException ex = assertThrows(
-                VerifyFieldsException.class,
-                () -> validator.execute(invalidPassword)
-        );
+    // ─── Invalid inputs: too short (< 8) and no regex match ──────────────────
+
+    @ParameterizedTest(name = "Too-short password: \"{0}\"")
+    @ValueSource(strings = {"weak", "bad", "Ab1@"})
+    @DisplayName("Should throw VerifyFieldsException for password shorter than 8 chars with no regex match")
+    void shouldThrowForTooShortPassword(String password) {
+        assertThrows(VerifyFieldsException.class, () -> new PasswordValidator().execute(password));
+    }
+
+    // ─── Invalid inputs: length > 12 and no regex match ──────────────────────
+
+    @ParameterizedTest(name = "Long invalid password: \"{0}\"")
+    @ValueSource(strings = {"weakpassword1234!", "nouppercase12345!"})
+    @DisplayName("Should throw VerifyFieldsException for password longer than 12 chars with no regex match")
+    void shouldThrowForLongInvalidPassword(String password) {
+        assertThrows(VerifyFieldsException.class, () -> new PasswordValidator().execute(password));
+    }
+
+    // ─── Message & type validation ────────────────────────────────────────────
+
+    @Test
+    @DisplayName("Should throw with message 'Invalid Password format'")
+    void shouldThrowWithCorrectMessage() {
+        VerifyFieldsException ex = assertThrows(VerifyFieldsException.class,
+                () -> new PasswordValidator().execute("weak"));
         assertEquals("Invalid Password format", ex.getMessage());
     }
 
     @Test
-    @DisplayName("Exception should be instance of RuntimeException")
-    void exceptionShouldBeRuntimeException() {
-        PasswordValidator validator = new PasswordValidator("weak");
-        VerifyFieldsException ex = assertThrows(VerifyFieldsException.class,
-                () -> validator.execute("weak"));
-        assertInstanceOf(RuntimeException.class, ex);
-    }
-
-    // ─── execute() updates internal state ────────────────────────────────────
-
-    @Test
-    @DisplayName("execute() should use the value passed as argument, not constructor value")
-    void executeShouldUseArgumentValue() {
-        // Constructed with invalid password but executed with a valid one
-        PasswordValidator validator = new PasswordValidator("weak");
-        assertDoesNotThrow(() -> validator.execute("Password1@"));
-    }
-
-    @Test
-    @DisplayName("Should throw when execute() is called with invalid value")
-    void shouldThrowWhenExecutedWithInvalidPassword() {
-        PasswordValidator validator = new PasswordValidator("Password1@");
-        assertThrows(VerifyFieldsException.class, () -> validator.execute("weak"));
+    @DisplayName("Exception should extend RuntimeException")
+    void exceptionShouldExtendRuntimeException() {
+        assertThrows(RuntimeException.class, () -> new PasswordValidator().execute("weak"));
     }
 }
-

@@ -9,12 +9,19 @@ import static org.junit.jupiter.api.Assertions.*;
 class ValidTest {
 
     @Test
+    @DisplayName("Should return the value when implementation accepts it")
+    void shouldReturnValueWhenValid() {
+        Valid valid = value -> value.toUpperCase();
+        assertEquals("HELLO", valid.execute("hello"));
+    }
+
+    @Test
     @DisplayName("Should execute without throwing for a valid value")
     void shouldExecuteWithValidValue() {
         Valid valid = value -> {
-            if (value == null || value.isBlank()) {
-                throw new IllegalArgumentException("Value must not be blank");
-            }
+            if (value == null || value.isBlank())
+                throw new IllegalArgumentException("blank");
+            return value;
         };
         assertDoesNotThrow(() -> valid.execute("valid-value"));
     }
@@ -23,9 +30,8 @@ class ValidTest {
     @DisplayName("Should throw when implementation rejects empty value")
     void shouldThrowWhenValueIsEmpty() {
         Valid valid = value -> {
-            if (value == null || value.isEmpty()) {
-                throw new IllegalArgumentException("Value cannot be empty");
-            }
+            if (value.isEmpty()) throw new IllegalArgumentException("empty");
+            return value;
         };
         assertThrows(IllegalArgumentException.class, () -> valid.execute(""));
     }
@@ -34,9 +40,8 @@ class ValidTest {
     @DisplayName("Should throw when implementation rejects null value")
     void shouldThrowWhenValueIsNull() {
         Valid valid = value -> {
-            if (value == null) {
-                throw new IllegalArgumentException("Value cannot be null");
-            }
+            if (value == null) throw new IllegalArgumentException("null");
+            return value;
         };
         assertThrows(IllegalArgumentException.class, () -> valid.execute(null));
     }
@@ -44,35 +49,15 @@ class ValidTest {
     @Test
     @DisplayName("Should be implementable as a lambda expression")
     void shouldBeImplementableAsLambda() {
-        final String[] captured = {null};
-        Valid valid = value -> captured[0] = value;
-
-        valid.execute("captured-value");
-
-        assertEquals("captured-value", captured[0]);
-    }
-
-    @Test
-    @DisplayName("Should allow multiple executions with different values")
-    void shouldAllowMultipleExecutions() {
-        final int[] counter = {0};
-        Valid valid = value -> counter[0]++;
-
-        valid.execute("first");
-        valid.execute("second");
-        valid.execute("third");
-
-        assertEquals(3, counter[0]);
+        Valid valid = value -> "processed:" + value;
+        assertEquals("processed:test", valid.execute("test"));
     }
 
     @Test
     @DisplayName("Should propagate any RuntimeException thrown in implementation")
     void shouldPropagateRuntimeException() {
-        Valid valid = value -> {
-            throw new RuntimeException("propagated");
-        };
+        Valid valid = value -> { throw new RuntimeException("propagated"); };
         RuntimeException ex = assertThrows(RuntimeException.class, () -> valid.execute("any"));
         assertEquals("propagated", ex.getMessage());
     }
 }
-
