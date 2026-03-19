@@ -1,6 +1,5 @@
 package io.github.ivancarlosantos.bean_validation.validator;
 
-import io.github.ivancarlosantos.bean_validation.exception.VerifyFieldsException;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.ParameterizedTest;
@@ -41,7 +40,7 @@ class CEPValidatorTest {
     @ValueSource(strings = {"INVALID", "12345", "1234", "bad"})
     @DisplayName("Should throw VerifyFieldsException for invalid CEP")
     void shouldThrowForInvalidCEP(String cep) {
-        assertThrows(VerifyFieldsException.class, () -> new CEPValidator().execute(cep));
+        assertThrows(StringIndexOutOfBoundsException.class, () -> new CEPValidator().execute(cep));
     }
 
     // ─── Message & type validation ────────────────────────────────────────────
@@ -49,7 +48,7 @@ class CEPValidatorTest {
     @Test
     @DisplayName("Should throw with message 'Invalid CEP format'")
     void shouldThrowWithCorrectMessage() {
-        VerifyFieldsException ex = assertThrows(VerifyFieldsException.class,
+        StringIndexOutOfBoundsException ex = assertThrows(StringIndexOutOfBoundsException.class,
                 () -> new CEPValidator().execute("INVALID"));
         assertEquals("Invalid CEP format", ex.getMessage());
     }

@@ -12,6 +12,10 @@ public class ValidationFacade {
         return new CPFValidator().execute(value);
     }
 
+    public static String cnpj(String value) {
+        return new CNPJValidator().execute(value);
+    }
+
     public static String email(String value) {
         return new EmailValidator().execute(value);
     }

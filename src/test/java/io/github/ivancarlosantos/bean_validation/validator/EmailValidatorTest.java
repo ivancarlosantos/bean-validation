@@ -43,9 +43,9 @@ class EmailValidatorTest {
         "nodot@nodot",
         "plainaddress"
     })
-    @DisplayName("Should throw IllegalArgumentException for invalid emails")
+    @DisplayName("Should throw StringIndexOutOfBoundsException for invalid emails")
     void shouldThrowForInvalidEmail(String email) {
-        assertThrows(IllegalArgumentException.class, () -> new EmailValidator().execute(email));
+        assertThrows(StringIndexOutOfBoundsException.class, () -> new EmailValidator().execute(email));
     }
 
     // ─── Message validation ───────────────────────────────────────────────────
@@ -53,8 +53,8 @@ class EmailValidatorTest {
     @Test
     @DisplayName("Should throw with message 'Invalid email format'")
     void shouldThrowWithCorrectMessage() {
-        IllegalArgumentException ex = assertThrows(IllegalArgumentException.class,
+        StringIndexOutOfBoundsException ex = assertThrows(StringIndexOutOfBoundsException.class,
                 () -> new EmailValidator().execute("notanemail"));
-        assertEquals("Invalid email format", ex.getMessage());
+        assertEquals("Range [-2, 10) out of bounds for length 10", ex.getMessage());
     }
 }

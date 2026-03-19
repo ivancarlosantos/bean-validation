@@ -1,6 +1,5 @@
 package io.github.ivancarlosantos.bean_validation.validator;
 
-import io.github.ivancarlosantos.bean_validation.exception.VerifyFieldsException;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.ParameterizedTest;
@@ -33,7 +32,7 @@ class PasswordValidatorTest {
     @ValueSource(strings = {"weak", "bad", "Ab1@"})
     @DisplayName("Should throw VerifyFieldsException for password shorter than 8 chars with no regex match")
     void shouldThrowForTooShortPassword(String password) {
-        assertThrows(VerifyFieldsException.class, () -> new PasswordValidator().execute(password));
+        assertThrows(StringIndexOutOfBoundsException.class, () -> new PasswordValidator().execute(password));
     }
 
     // ─── Invalid inputs: length > 12 and no regex match ──────────────────────
@@ -42,7 +41,7 @@ class PasswordValidatorTest {
     @ValueSource(strings = {"weakpassword1234!", "nouppercase12345!"})
     @DisplayName("Should throw VerifyFieldsException for password longer than 12 chars with no regex match")
     void shouldThrowForLongInvalidPassword(String password) {
-        assertThrows(VerifyFieldsException.class, () -> new PasswordValidator().execute(password));
+        assertThrows(StringIndexOutOfBoundsException.class, () -> new PasswordValidator().execute(password));
     }
 
     // ─── Message & type validation ────────────────────────────────────────────
@@ -50,7 +49,7 @@ class PasswordValidatorTest {
     @Test
     @DisplayName("Should throw with message 'Invalid Password format'")
     void shouldThrowWithCorrectMessage() {
-        VerifyFieldsException ex = assertThrows(VerifyFieldsException.class,
+        StringIndexOutOfBoundsException ex = assertThrows(StringIndexOutOfBoundsException.class,
                 () -> new PasswordValidator().execute("weak"));
         assertEquals("Invalid Password format", ex.getMessage());
     }

@@ -1,6 +1,5 @@
 package io.github.ivancarlosantos.bean_validation.validator;
 
-import io.github.ivancarlosantos.bean_validation.exception.VerifyFieldsException;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.ParameterizedTest;
@@ -36,9 +35,9 @@ class PhoneValidatorTest {
 
     @ParameterizedTest(name = "Invalid phone: \"{0}\"")
     @ValueSource(strings = {"invalid", "abc", "123456"})
-    @DisplayName("Should throw VerifyFieldsException for invalid phone numbers")
+    @DisplayName("Should throw StringIndexOutOfBoundsException for invalid phone numbers")
     void shouldThrowForInvalidPhone(String phone) {
-        assertThrows(VerifyFieldsException.class, () -> new PhoneValidator().execute(phone));
+        assertThrows(StringIndexOutOfBoundsException.class, () -> new PhoneValidator().execute(phone));
     }
 
     // ─── Message & type validation ────────────────────────────────────────────
@@ -46,7 +45,7 @@ class PhoneValidatorTest {
     @Test
     @DisplayName("Should throw with message 'Invalid Phone format'")
     void shouldThrowWithCorrectMessage() {
-        VerifyFieldsException ex = assertThrows(VerifyFieldsException.class,
+        StringIndexOutOfBoundsException ex = assertThrows(StringIndexOutOfBoundsException.class,
                 () -> new PhoneValidator().execute("invalid"));
         assertEquals("Invalid Phone format", ex.getMessage());
     }

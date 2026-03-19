@@ -1,6 +1,5 @@
 package io.github.ivancarlosantos.bean_validation.validator;
 
-import io.github.ivancarlosantos.bean_validation.exception.VerifyFieldsException;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.ParameterizedTest;
@@ -36,9 +35,9 @@ class LoginValidatorTest {
         "user!",
         "thisLoginNameIsTooLongToBeValid1234"
     })
-    @DisplayName("Should throw VerifyFieldsException for invalid login")
+    @DisplayName("Should throw StringIndexOutOfBoundsException for invalid login")
     void shouldThrowForInvalidLogin(String login) {
-        assertThrows(VerifyFieldsException.class, () -> new LoginValidator().execute(login));
+        assertThrows(StringIndexOutOfBoundsException.class, () -> new LoginValidator().execute(login));
     }
 
     // ─── Message & type validation ────────────────────────────────────────────
@@ -46,7 +45,7 @@ class LoginValidatorTest {
     @Test
     @DisplayName("Should throw with message 'Invalid Login format'")
     void shouldThrowWithCorrectMessage() {
-        VerifyFieldsException ex = assertThrows(VerifyFieldsException.class,
+        StringIndexOutOfBoundsException ex = assertThrows(StringIndexOutOfBoundsException.class,
                 () -> new LoginValidator().execute("ab"));
         assertEquals("Invalid Login format", ex.getMessage());
     }

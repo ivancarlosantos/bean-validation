@@ -91,6 +91,24 @@ class RegexPatternsTest {
     }
 
     // ─────────────────────────────────────────────────────────────────────────
+    // CNPJ
+    // ─────────────────────────────────────────────────────────────────────────
+
+    @ParameterizedTest(name = "Valid CNPJ: \"{0}\"")
+    @ValueSource(strings = {"59.456.277/0001-76", "01.234.567/0001-89", "00.000.000/0000-00"})
+    @DisplayName("Should match valid CNPJ patterns")
+    void shouldMatchValidCNPJPatterns(String cnpj) {
+        assertTrue(cnpj.matches(RegexPatterns.CNPJ));
+    }
+
+    @ParameterizedTest(name = "Invalid CNPJ: \"{0}\"")
+    @ValueSource(strings = {"12345678909", "00.000.ABC/0000-00", "00.000.000\\0000-00", "ABC.DEF.GHI-JK"})
+    @DisplayName("Should NOT match invalid CNPJ patterns")
+    void shouldNotMatchInvalidCNPJPatterns(String cnpj) {
+        assertFalse(cnpj.matches(RegexPatterns.CNPJ));
+    }
+
+    // ─────────────────────────────────────────────────────────────────────────
     // PHONE
     // ─────────────────────────────────────────────────────────────────────────
 
@@ -165,16 +183,17 @@ class RegexPatternsTest {
             () -> assertNotNull(RegexPatterns.LOGIN),
             () -> assertNotNull(RegexPatterns.EMAIL),
             () -> assertNotNull(RegexPatterns.CPF),
+            () -> assertNotNull(RegexPatterns.CNPJ),
             () -> assertNotNull(RegexPatterns.PHONE),
             () -> assertNotNull(RegexPatterns.CEP),
             () -> assertNotNull(RegexPatterns.PASSWORD),
             () -> assertFalse(RegexPatterns.LOGIN.isBlank()),
             () -> assertFalse(RegexPatterns.EMAIL.isBlank()),
             () -> assertFalse(RegexPatterns.CPF.isBlank()),
+            () -> assertFalse(RegexPatterns.CNPJ.isBlank()),
             () -> assertFalse(RegexPatterns.PHONE.isBlank()),
             () -> assertFalse(RegexPatterns.CEP.isBlank()),
             () -> assertFalse(RegexPatterns.PASSWORD.isBlank())
         );
     }
 }
-

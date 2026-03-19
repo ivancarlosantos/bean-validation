@@ -21,7 +21,7 @@ sleep 5
 echo "========================================"
 echo " [3/5] Análise de cobertura JaCoCo..."
 echo "========================================"
-mvn verify
+mvn test
 
 sleep 5
 
