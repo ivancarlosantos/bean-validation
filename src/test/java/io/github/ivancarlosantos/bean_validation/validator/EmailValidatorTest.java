@@ -1,5 +1,6 @@
 package io.github.ivancarlosantos.bean_validation.validator;
 
+import io.github.ivancarlosantos.bean_validation.exception.VerifyFieldsException;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.ParameterizedTest;
@@ -43,9 +44,9 @@ class EmailValidatorTest {
         "nodot@nodot",
         "plainaddress"
     })
-    @DisplayName("Should throw StringIndexOutOfBoundsException for invalid emails")
+    @DisplayName("Should throw VerifyFieldsException for invalid emails")
     void shouldThrowForInvalidEmail(String email) {
-        assertThrows(StringIndexOutOfBoundsException.class, () -> new EmailValidator().execute(email));
+        assertThrows(VerifyFieldsException.class, () -> new EmailValidator().execute(email));
     }
 
     // ─── Message validation ───────────────────────────────────────────────────
@@ -53,8 +54,8 @@ class EmailValidatorTest {
     @Test
     @DisplayName("Should throw with message 'Invalid email format'")
     void shouldThrowWithCorrectMessage() {
-        StringIndexOutOfBoundsException ex = assertThrows(StringIndexOutOfBoundsException.class,
+        VerifyFieldsException ex = assertThrows(VerifyFieldsException.class,
                 () -> new EmailValidator().execute("notanemail"));
-        assertEquals("Range [-2, 10) out of bounds for length 10", ex.getMessage());
+        assertEquals("Invalid email format", ex.getMessage());
     }
 }

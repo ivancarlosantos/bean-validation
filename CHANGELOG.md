@@ -7,6 +7,15 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ---
 
+## [Unreleased]
+
+### Fixed
+
+- Validações de `CEP`, `CPF`, `CNPJ`, `email`, `login`, `password` e `phone` agora lançam `VerifyFieldsException` quando a entrada não corresponde ao padrão definido em `RegexPatterns`.
+- A validação passou a ocorrer antes da aplicação das máscaras internas, evitando erros de índice em entradas inválidas.
+
+---
+
 ## [1.0.0] - 2026-03-11
 
 ### Added

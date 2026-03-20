@@ -1,5 +1,6 @@
 package io.github.ivancarlosantos.bean_validation.validator;
 
+import io.github.ivancarlosantos.bean_validation.exception.VerifyFieldsException;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.ParameterizedTest;
@@ -35,9 +36,9 @@ class PhoneValidatorTest {
 
     @ParameterizedTest(name = "Invalid phone: \"{0}\"")
     @ValueSource(strings = {"invalid", "abc", "123456"})
-    @DisplayName("Should throw StringIndexOutOfBoundsException for invalid phone numbers")
+    @DisplayName("Should throw VerifyFieldsException for invalid phone numbers")
     void shouldThrowForInvalidPhone(String phone) {
-        assertThrows(StringIndexOutOfBoundsException.class, () -> new PhoneValidator().execute(phone));
+        assertThrows(VerifyFieldsException.class, () -> new PhoneValidator().execute(phone));
     }
 
     // ─── Message & type validation ────────────────────────────────────────────
@@ -45,7 +46,7 @@ class PhoneValidatorTest {
     @Test
     @DisplayName("Should throw with message 'Invalid Phone format'")
     void shouldThrowWithCorrectMessage() {
-        StringIndexOutOfBoundsException ex = assertThrows(StringIndexOutOfBoundsException.class,
+        VerifyFieldsException ex = assertThrows(VerifyFieldsException.class,
                 () -> new PhoneValidator().execute("invalid"));
         assertEquals("Invalid Phone format", ex.getMessage());
     }
@@ -53,6 +54,6 @@ class PhoneValidatorTest {
     @Test
     @DisplayName("Exception should extend RuntimeException")
     void exceptionShouldExtendRuntimeException() {
-        assertThrows(RuntimeException.class, () -> new PhoneValidator().execute("bad"));
+        assertThrows(VerifyFieldsException.class, () -> new PhoneValidator().execute("bad"));
     }
 }

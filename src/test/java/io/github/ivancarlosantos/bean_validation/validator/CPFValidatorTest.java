@@ -1,5 +1,6 @@
 package io.github.ivancarlosantos.bean_validation.validator;
 
+import io.github.ivancarlosantos.bean_validation.exception.VerifyFieldsException;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.ParameterizedTest;
@@ -32,7 +33,7 @@ class CPFValidatorTest {
     @ValueSource(strings = {"BAD", "12345", "badformat", "short"})
     @DisplayName("Should throw VerifyFieldsException for invalid CPF (length != 11 and no regex match)")
     void shouldThrowForInvalidCPF(String cpf) {
-        assertThrows(StringIndexOutOfBoundsException.class, () -> new CPFValidator().execute(cpf));
+        assertThrows(VerifyFieldsException.class, () -> new CPFValidator().execute(cpf));
     }
 
     // ─── Message & type validation ────────────────────────────────────────────
@@ -40,14 +41,14 @@ class CPFValidatorTest {
     @Test
     @DisplayName("Should throw with message 'Invalid CPF format'")
     void shouldThrowWithCorrectMessage() {
-        StringIndexOutOfBoundsException ex = assertThrows(StringIndexOutOfBoundsException.class,
+        VerifyFieldsException ex = assertThrows(VerifyFieldsException.class,
                 () -> new CPFValidator().execute("BAD"));
-        assertEquals("Range [12, 3) out of bounds for length 3", ex.getMessage());
+        assertEquals("Invalid CPF format", ex.getMessage());
     }
 
     @Test
     @DisplayName("Exception should extend RuntimeException")
     void exceptionShouldExtendRuntimeException() {
-        assertThrows(RuntimeException.class, () -> new CPFValidator().execute("BAD"));
+        assertThrows(VerifyFieldsException.class, () -> new CPFValidator().execute("BAD"));
     }
 }

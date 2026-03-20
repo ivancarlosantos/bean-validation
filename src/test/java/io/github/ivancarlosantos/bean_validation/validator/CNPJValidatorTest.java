@@ -1,5 +1,6 @@
 package io.github.ivancarlosantos.bean_validation.validator;
 
+import io.github.ivancarlosantos.bean_validation.exception.VerifyFieldsException;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.ParameterizedTest;
@@ -22,10 +23,10 @@ public class CNPJValidatorTest {
         assertEquals(cnpj, result);
     }
 
-    @ParameterizedTest(name = "Raw CNPJ: \"{0}\"")
-    @ValueSource(strings = {"59.456.277/0001-76", "00.000.000/0000-00", "AB.CDE.FGH/IJKL-MN"})
-    @DisplayName("Should return the value for raw CNPJ (XX.XXX.XXX/XXXX-XX)")
-    void shouldReturnValueForRawCNPJ(String cnpj) {
+    @ParameterizedTest(name = "Additional valid CNPJ: \"{0}\"")
+    @ValueSource(strings = {"00.000.000/0000-00", "12.345.678/9012-34"})
+    @DisplayName("Should return the value for additional valid CNPJ cases")
+    void shouldReturnValueForAdditionalValidCNPJ(String cnpj) {
         String result = new CNPJValidator().execute(cnpj);
         assertEquals(cnpj, result);
     }
@@ -42,7 +43,7 @@ public class CNPJValidatorTest {
     @ValueSource(strings = {"INVALID", "59.456.277/00001-760", "1234", "bad"})
     @DisplayName("Should throw VerifyFieldsException for invalid CNPJ")
     void shouldThrowForInvalidCNPJ(String cnpj) {
-        assertThrows(StringIndexOutOfBoundsException.class, () -> new CNPJValidator().execute(cnpj));
+        assertThrows(VerifyFieldsException.class, () -> new CNPJValidator().execute(cnpj));
     }
 
     // ─── Message & type validation ────────────────────────────────────────────
@@ -50,14 +51,14 @@ public class CNPJValidatorTest {
     @Test
     @DisplayName("Should throw with message 'Invalid CNPJ format'")
     void shouldThrowWithCorrectMessage() {
-        StringIndexOutOfBoundsException ex = assertThrows(StringIndexOutOfBoundsException.class,
+        VerifyFieldsException ex = assertThrows(VerifyFieldsException.class,
                 () -> new CNPJValidator().execute("INVALID"));
-        assertEquals("Range [16, 7) out of bounds for length 7", ex.getMessage());
+        assertEquals("Invalid CNPJ format", ex.getMessage());
     }
 
     @Test
     @DisplayName("Exception should extend RuntimeException")
     void exceptionShouldExtendRuntimeException() {
-        assertThrows(RuntimeException.class, () -> new CNPJValidator().execute("BAD"));
+        assertThrows(VerifyFieldsException.class, () -> new CNPJValidator().execute("BAD"));
     }
 }

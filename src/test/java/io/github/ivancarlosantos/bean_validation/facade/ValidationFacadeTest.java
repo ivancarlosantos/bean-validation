@@ -1,10 +1,14 @@
 package io.github.ivancarlosantos.bean_validation.facade;
 
+import io.github.ivancarlosantos.bean_validation.exception.VerifyFieldsException;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.ValueSource;
+
+import java.lang.reflect.Constructor;
+import java.lang.reflect.Modifier;
 
 import static org.junit.jupiter.api.Assertions.*;
 
@@ -82,7 +86,7 @@ class ValidationFacadeTest {
         }
 
         @ParameterizedTest(name = "Valid CNPJ: \"{0}\"")
-        @ValueSource(strings = {"59.456.277/0001-76", "59.456.277/0001-76"})
+        @ValueSource(strings = {"59.456.277/0001-76", "12.345.678/9012-34"})
         @DisplayName("cnpj() accepts valid CNPJ formats")
         void cnpjValidInputs(String cnpj) {
             assertDoesNotThrow(() -> ValidationFacade.cnpj(cnpj));
@@ -133,43 +137,43 @@ class ValidationFacadeTest {
         @Test
         @DisplayName("cep() throws VerifyFieldsException for invalid CEP")
         void cepInvalidThrows() {
-            assertThrows(StringIndexOutOfBoundsException.class, () -> ValidationFacade.cep("INVALID"));
+            assertThrows(VerifyFieldsException.class, () -> ValidationFacade.cep("INVALID"));
         }
 
         @Test
-        @DisplayName("cpf() throws StringIndexOutOfBoundsException for invalid CPF")
+        @DisplayName("cpf() throws VerifyFieldsException for invalid CPF")
         void cpfInvalidThrows() {
-            assertThrows(StringIndexOutOfBoundsException.class, () -> ValidationFacade.cpf("BAD"));
+            assertThrows(VerifyFieldsException.class, () -> ValidationFacade.cpf("BAD"));
         }
 
         @Test
-        @DisplayName("cnpj() throws StringIndexOutOfBoundsException for invalid CNPJ")
+        @DisplayName("cnpj() throws VerifyFieldsException for invalid CNPJ")
         void cnpjInvalidThrows() {
-            assertThrows(StringIndexOutOfBoundsException.class, () -> ValidationFacade.cnpj("WORST"));
+            assertThrows(VerifyFieldsException.class, () -> ValidationFacade.cnpj("WORST"));
         }
 
         @Test
-        @DisplayName("email() throws StringIndexOutOfBoundsException for invalid email")
+        @DisplayName("email() throws VerifyFieldsException for invalid email")
         void emailInvalidThrows() {
-            assertThrows(StringIndexOutOfBoundsException.class, () -> ValidationFacade.email("notanemail"));
+            assertThrows(VerifyFieldsException.class, () -> ValidationFacade.email("notanemail"));
         }
 
         @Test
-        @DisplayName("login() throws StringIndexOutOfBoundsException for too-short login")
+        @DisplayName("login() throws VerifyFieldsException for too-short login")
         void loginInvalidThrows() {
-            assertThrows(StringIndexOutOfBoundsException.class, () -> ValidationFacade.login("ab"));
+            assertThrows(VerifyFieldsException.class, () -> ValidationFacade.login("ab"));
         }
 
         @Test
         @DisplayName("password() throws VerifyFieldsException for weak short password")
         void passwordInvalidThrows() {
-            assertThrows(StringIndexOutOfBoundsException.class, () -> ValidationFacade.password("weak"));
+            assertThrows(VerifyFieldsException.class, () -> ValidationFacade.password("weak"));
         }
 
         @Test
-        @DisplayName("phone() throws StringIndexOutOfBoundsException for invalid phone")
+        @DisplayName("phone() throws VerifyFieldsException for invalid phone")
         void phoneInvalidThrows() {
-            assertThrows(StringIndexOutOfBoundsException.class, () -> ValidationFacade.phone("invalid"));
+            assertThrows(VerifyFieldsException.class, () -> ValidationFacade.phone("invalid"));
         }
     }
 
@@ -184,7 +188,7 @@ class ValidationFacadeTest {
         @Test
         @DisplayName("cep() invalid → 'Invalid CEP format'")
         void cepExceptionMessage() {
-            StringIndexOutOfBoundsException ex = assertThrows(StringIndexOutOfBoundsException.class,
+            VerifyFieldsException ex = assertThrows(VerifyFieldsException.class,
                     () -> ValidationFacade.cep("INVALID"));
             assertEquals("Invalid CEP format", ex.getMessage());
         }
@@ -192,31 +196,31 @@ class ValidationFacadeTest {
         @Test
         @DisplayName("cpf() invalid → 'Invalid CPF format'")
         void cpfExceptionMessage() {
-            StringIndexOutOfBoundsException ex = assertThrows(StringIndexOutOfBoundsException.class,
+            VerifyFieldsException ex = assertThrows(VerifyFieldsException.class,
                     () -> ValidationFacade.cpf("BAD"));
-            assertEquals("Range [12, 3) out of bounds for length 3", ex.getMessage());
+            assertEquals("Invalid CPF format", ex.getMessage());
         }
 
         @Test
         @DisplayName("cnpj() invalid → 'Invalid CNPJ format'")
         void cnpjExceptionMessage() {
-            StringIndexOutOfBoundsException ex = assertThrows(StringIndexOutOfBoundsException.class,
+            VerifyFieldsException ex = assertThrows(VerifyFieldsException.class,
                     () -> ValidationFacade.cnpj("WORST"));
-            assertEquals("Range [16, 5) out of bounds for length 5", ex.getMessage());
+            assertEquals("Invalid CNPJ format", ex.getMessage());
         }
 
         @Test
         @DisplayName("email() invalid → 'Invalid email format'")
         void emailExceptionMessage() {
-            StringIndexOutOfBoundsException ex = assertThrows(StringIndexOutOfBoundsException.class,
+            VerifyFieldsException ex = assertThrows(VerifyFieldsException.class,
                     () -> ValidationFacade.email("bad"));
-            assertEquals("Range [-2, 3) out of bounds for length 3", ex.getMessage());
+            assertEquals("Invalid email format", ex.getMessage());
         }
 
         @Test
         @DisplayName("login() invalid → 'Invalid Login format'")
         void loginExceptionMessage() {
-            StringIndexOutOfBoundsException ex = assertThrows(StringIndexOutOfBoundsException.class,
+            VerifyFieldsException ex = assertThrows(VerifyFieldsException.class,
                     () -> ValidationFacade.login("ab"));
             assertEquals("Invalid Login format", ex.getMessage());
         }
@@ -224,7 +228,7 @@ class ValidationFacadeTest {
         @Test
         @DisplayName("password() invalid → 'Invalid Password format'")
         void passwordExceptionMessage() {
-            StringIndexOutOfBoundsException ex = assertThrows(StringIndexOutOfBoundsException.class,
+            VerifyFieldsException ex = assertThrows(VerifyFieldsException.class,
                     () -> ValidationFacade.password("weak"));
             assertEquals("Invalid Password format", ex.getMessage());
         }
@@ -232,7 +236,7 @@ class ValidationFacadeTest {
         @Test
         @DisplayName("phone() invalid → 'Invalid Phone format'")
         void phoneExceptionMessage() {
-            StringIndexOutOfBoundsException ex = assertThrows(StringIndexOutOfBoundsException.class,
+            VerifyFieldsException ex = assertThrows(VerifyFieldsException.class,
                     () -> ValidationFacade.phone("invalid"));
             assertEquals("Invalid Phone format", ex.getMessage());
         }
@@ -243,8 +247,9 @@ class ValidationFacadeTest {
     // ─────────────────────────────────────────────────────────────────────────
 
     @Test
-    @DisplayName("ValidationFacade should be instantiable (public default constructor)")
-    void facadeShouldBeInstantiable() {
-        assertDoesNotThrow(() -> assertNotNull(new ValidationFacade()));
+    @DisplayName("ValidationFacade should expose a public constructor")
+    void facadeShouldExposePublicConstructor() throws Exception {
+        Constructor<ValidationFacade> constructor = ValidationFacade.class.getDeclaredConstructor();
+        assertTrue(Modifier.isPublic(constructor.getModifiers()));
     }
 }

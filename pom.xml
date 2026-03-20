@@ -5,7 +5,7 @@
 
     <groupId>io.github.ivancarlosantos</groupId>
     <artifactId>bean-validation</artifactId>
-    <version>1.2.6</version>
+    <version>1.2.7</version>
     <name>bean-validation</name>
     <packaging>jar</packaging>
     <description>Spring Boot Validation Field</description>
@@ -85,6 +85,7 @@
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-compiler-plugin</artifactId>
+                <version>3.14.1</version>
             </plugin>
 
             <plugin>
