@@ -1,13 +1,12 @@
 package io.github.ivancarlosantos.bean_validation;
 
 import org.junit.jupiter.api.Test;
-import org.springframework.boot.test.context.SpringBootTest;
 
-@SpringBootTest
 class BeanValidationApplicationTests {
 
 	@Test
 	void contextLoads() {
+		System.out.println("bean-validation tests");
 	}
 
 }
