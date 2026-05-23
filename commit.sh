@@ -26,7 +26,14 @@ mvn test
 sleep 5
 
 echo "========================================"
-echo " [4/5] Enviando para o GitHub..."
+echo " [4/5] Análise de vulnerabilidades..."
+echo "========================================"
+mvn org.owasp:dependency-check-maven:check
+
+sleep 5
+
+echo "========================================"
+echo " [5/5] Enviando para o GitHub..."
 echo "========================================"
 git add .
 sleep 2
@@ -37,7 +44,7 @@ git push origin master
 sleep 5
 
 echo "========================================"
-echo " [5/5] Publicando no Maven Central..."
+echo " [6/5] Publicando no Maven Central..."
 echo "========================================"
 mvn clean deploy
 
