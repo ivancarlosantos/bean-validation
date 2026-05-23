@@ -9,10 +9,34 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+### Added
+
+- Arquivo `CHANGELOG.md` atualizado com as alterações desta release.
+
+### Changed
+
+- Preparação para release `1.3.8` (bump de versão no `pom.xml`).
+- Refatoração de logs: substituídos usos de `System.out.println` por `java.util.logging.Logger` nas classes de validadores para permitir melhor controle e integração com frameworks de logging.
+- Verificação de vulnerabilidades realizada nas dependências (sem CVEs conhecidos para as versões atuais).
+
 ### Fixed
 
 - Validações de `CEP`, `CPF`, `CNPJ`, `email`, `login`, `password` e `phone` agora lançam `VerifyFieldsException` quando a entrada não corresponde ao padrão definido em `RegexPatterns`.
 - A validação passou a ocorrer antes da aplicação das máscaras internas, evitando erros de índice em entradas inválidas.
+
+---
+
+## [1.3.8] - 2026-05-23
+
+### Changed
+
+- Versão do projeto atualizada para `1.3.8` no `pom.xml`.
+- Substituídos logs por `java.util.logging.Logger` nas classes de validação (`CEPValidator`, `CPFValidator`, `CNPJValidator`, `EmailValidator`, `LoginValidator`, `PasswordValidator`, `PhoneValidator`).
+- Execução de análise de vulnerabilidades nas dependências: nenhuma vulnerabilidade conhecida encontrada para as versões usadas.
+
+### Security
+
+- Mantidas recomendações de segurança: regras de expressões regulares robustas para validação de entrada e lançamento de `VerifyFieldsException` para entradas inválidas.
 
 ---
 

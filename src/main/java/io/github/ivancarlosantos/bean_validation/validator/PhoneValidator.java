@@ -4,11 +4,13 @@ import io.github.ivancarlosantos.bean_validation.exception.VerifyFieldsException
 import io.github.ivancarlosantos.bean_validation.masks.MaskedFields;
 import io.github.ivancarlosantos.bean_validation.pattern.RegexPatterns;
 import io.github.ivancarlosantos.bean_validation.valid.Valid;
+import java.util.logging.Logger;
 
 
 public class PhoneValidator implements Valid {
 
     private final MaskedFields mf = new MaskedFields();
+    private static final Logger LOGGER = Logger.getLogger(PhoneValidator.class.getName());
 
     @Override
     public String execute(String value) {
@@ -16,7 +18,7 @@ public class PhoneValidator implements Valid {
             throw new VerifyFieldsException("Invalid Phone format");
         }
 
-        System.out.println("Validating Phone number: " + mf.phoneMask(value));
+        LOGGER.info("Validating Phone number: " + mf.phoneMask(value));
 
         return value;
     }

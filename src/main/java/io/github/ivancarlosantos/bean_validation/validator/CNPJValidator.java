@@ -5,11 +5,13 @@ import io.github.ivancarlosantos.bean_validation.exception.VerifyFieldsException
 import io.github.ivancarlosantos.bean_validation.masks.MaskedFields;
 import io.github.ivancarlosantos.bean_validation.pattern.RegexPatterns;
 import io.github.ivancarlosantos.bean_validation.valid.Valid;
+import java.util.logging.Logger;
 
 
 public class CNPJValidator implements Valid {
 
     private final MaskedFields mf = new MaskedFields();
+    private static final Logger LOGGER = Logger.getLogger(CNPJValidator.class.getName());
 
     @Override
     public String execute(String value) {
@@ -17,7 +19,7 @@ public class CNPJValidator implements Valid {
             throw new VerifyFieldsException("Invalid CNPJ format");
         }
 
-        System.out.println("Validating CNPJ: " + mf.cnpjMask(value));
+        LOGGER.info("Validating CNPJ: " + mf.cnpjMask(value));
 
         return value;
     }

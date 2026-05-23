@@ -4,11 +4,13 @@ import io.github.ivancarlosantos.bean_validation.exception.VerifyFieldsException
 import io.github.ivancarlosantos.bean_validation.masks.MaskedFields;
 import io.github.ivancarlosantos.bean_validation.pattern.RegexPatterns;
 import io.github.ivancarlosantos.bean_validation.valid.Valid;
+import java.util.logging.Logger;
 
 
 public class LoginValidator implements Valid {
 
     private final MaskedFields mf = new MaskedFields();
+    private static final Logger LOGGER = Logger.getLogger(LoginValidator.class.getName());
 
     @Override
     public String execute(String value) {
@@ -16,7 +18,7 @@ public class LoginValidator implements Valid {
             throw new VerifyFieldsException("Invalid Login format");
         }
 
-        System.out.println("Validating Login: " + mf.loginMask(value));
+        LOGGER.info("Validating Login: " + mf.loginMask(value));
         return value;
     }
 }
